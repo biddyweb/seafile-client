@@ -105,13 +105,14 @@ const std::vector<Account>& AccountManager::loadAccounts()
 
 int AccountManager::saveAccount(const Account& account)
 {
+    Account new_account = account;
     for (size_t i = 0; i < accounts_.size(); i++) {
         if (accounts_[i] == account) {
             accounts_.erase(accounts_.begin() + i);
             break;
         }
     }
-    accounts_.insert(accounts_.begin(), account);
+    accounts_.insert(accounts_.begin(), new_account);
     updateServerInfo(0);
 
     QString url = account.serverUrl.toEncoded().data();
@@ -278,6 +279,9 @@ void AccountManager::serverInfoFailed(const ApiError &error)
 
 bool AccountManager::clearAccountToken(const Account& account)
 {
+    Account new_account = account;
+    new_account.token = "";
+
     for (size_t i = 0; i < accounts_.size(); i++) {
         if (accounts_[i].serverUrl.toString() == account.serverUrl.toString()
             && accounts_[i].username == account.username) {
@@ -285,9 +289,6 @@ bool AccountManager::clearAccountToken(const Account& account)
             break;
         }
     }
-
-    Account new_account = account;
-    new_account.token = "";
 
     accounts_.push_back(new_account);
 
