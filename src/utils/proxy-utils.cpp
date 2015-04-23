@@ -3,6 +3,11 @@
 #include "utils-mac.h"
 
 #ifdef Q_OS_WIN32
+// WinHttpGetIEProxyConfigForCurrentUser is available only
+// for Windows XP or later
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
+#endif
 #include <windows.h>
 #include <winhttp.h>
 #elif defined(Q_OS_MAC)
@@ -145,14 +150,14 @@ void ProxyRules::parseFromString(const QString &rules) {
             }
             const QString &proxy_uri = proxy_server_for_scheme[i];
             const QString scheme_lower = scheme_or_uri.trimmed().toLower();
-            if (scheme_lower == "https") {
+            if (scheme_lower == "http") {
+                proxy_for_http = getFirstNetworkProxyFromString(proxy_uri);
+            } else if (scheme_lower == "https") {
                 proxy_for_https = getFirstNetworkProxyFromString(proxy_uri);
             } else if (scheme_lower == "ftp") {
                 proxy_for_ftp = getFirstNetworkProxyFromString(proxy_uri);
             } else if (scheme_lower == "socks5" || scheme_lower == "socks") {
                 proxy_for_fallback = getFirstNetworkProxyFromString(proxy_uri);
-            } else if (scheme_lower == "http" || scheme_lower != "http") {
-                proxy_for_http = getFirstNetworkProxyFromString(proxy_uri);
             } /* else ignore */
         }
     }
