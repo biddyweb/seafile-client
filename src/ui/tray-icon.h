@@ -44,10 +44,8 @@ private slots:
     void disableAutoSync();
     void enableAutoSync();
     void quitSeafile();
-    void onActivated(QSystemTrayIcon::ActivationReason);
     void prepareContextMenu();
     void showMainWindow();
-    void onClick();
     void rotateTrayIcon();
     void refreshTrayIcon();
     void refreshTrayIconToolTip();

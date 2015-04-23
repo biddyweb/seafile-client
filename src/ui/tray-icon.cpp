@@ -95,9 +95,6 @@ SeafileTrayIcon::SeafileTrayIcon(QObject *parent)
     createActions();
     createContextMenu();
 
-    connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-            this, SLOT(onActivated(QSystemTrayIcon::ActivationReason)));
-
     connect(SeahubNotificationsMonitor::instance(), SIGNAL(notificationsChanged()),
             this, SLOT(onSeahubNotificationsChanged()));
 
@@ -442,30 +439,6 @@ void SeafileTrayIcon::showSettingsWindow()
     seafApplet->settingsDialog()->show();
     seafApplet->settingsDialog()->raise();
     seafApplet->settingsDialog()->activateWindow();
-}
-
-void SeafileTrayIcon::onActivated(QSystemTrayIcon::ActivationReason reason)
-{
-#if !defined(Q_OS_MAC)
-    switch(reason) {
-    case QSystemTrayIcon::Trigger: // single click
-    case QSystemTrayIcon::MiddleClick:
-    case QSystemTrayIcon::DoubleClick:
-        onClick();
-        break;
-    default:
-        return;
-    }
-#endif
-}
-
-void SeafileTrayIcon::onClick()
-{
-    if (state_ == STATE_HAVE_UNREAD_MESSAGE) {
-        viewUnreadNotifications();
-    } else {
-        showMainWindow();
-    }
 }
 
 void SeafileTrayIcon::disableAutoSync()
